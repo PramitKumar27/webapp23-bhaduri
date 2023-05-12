@@ -4,7 +4,7 @@ import { NoConstraintViolation,
     MandatoryValueConstraintViolation, 
     RangeConstraintViolation,
     UniquenessConstraintViolation,
-    StringLenghtConstrainViolation } from "../../lib/errorTypes.mjs";
+    StringLengthConstrainViolation } from "../../lib/errorTypes.mjs";
 
 export default class Movie {
   // using a record parameter with ES6 function parameter destructuring
@@ -40,7 +40,7 @@ export default class Movie {
     }
     
     return new RangeConstraintViolation(
-      "The movie ID must be a positiv integer!");
+      "The movie ID must be a positive integer!");
   }
   static checkMovieIdAsId( id) {
     var constraintViolation = Movie.checkMovieId( id);
