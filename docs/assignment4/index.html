@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+ <meta charset="UTF-8" />
+ <title>Dustin Troppa Movie App</title>
+ <meta name="viewport" content="width=device-width, initial-scale=1"/>
+ <link rel="stylesheet" href="css/normalize.min.css"/>
+ <link rel="stylesheet" href="css/main.css"/>
+
+ 
+ <script type="module">
+  import { clearData, createTestData } from "./src/c/app.mjs";
+  const clearButton = document.getElementById("clearData"),
+    createTestDataButtons = document.querySelectorAll("button.createTestData");
+  // Set event handler for the button "clearData"
+  clearButton.addEventListener("click", clearData);
+  for (const btn of createTestDataButtons) {
+    btn.addEventListener("click", createTestData);
+  }
+</script>
+</head>
+<body>
+ <header>
+  <div class="wrapper clearfix">
+   <div class="title">
+    <h1>Movie Database</h1>
+   </div>
+   <nav>
+     <ul>
+       <li><a href="persons.html">Persons</a></li>
+       <li><a href="movies.html">Movies</a></li>
+     </ul>
+   </nav>
+  </div>
+ </header>
+ <main>
+  <div class="wrapper clearfix">
+   <p>This app supports the following operations:</p>
+   <div class="two-col-menu">
+     <ul class="menu">
+       <li><a href="persons.html">Manage person data</a></li>
+       <li><a href="movies.html">Manage movie data</a></li>
+     </ul>
+     <ul class="menu">
+       <li><button type="button" class="createTestData">Generate test data</button></li>
+       <li><button type="button" id="clearData">Clear database</button></li>
+     </ul>
+   </div>
+  </div>
+ </main>
+</body>
+</html>
