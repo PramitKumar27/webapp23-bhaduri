@@ -26,10 +26,10 @@ class UniquenessConstraintViolation extends Error {
   }
 }
 
-class StringLenghtConstrainViolation extends Error {
+class StringLengthConstrainViolation extends Error {
   constructor(message) {
     super(message);
-    this.name = "StringLenghtConstrainViolation";
+    this.name = "StringLengthConstrainViolation";
   }
 }
 
@@ -51,6 +51,6 @@ export { NoConstraintViolation,
   MandatoryValueConstraintViolation, 
   RangeConstraintViolation,
   UniquenessConstraintViolation,
-  StringLenghtConstrainViolation,
+  StringLengthConstrainViolation,
   IntervalConstraintViolation,
   ReferentialIntegrityConstraintViolation};

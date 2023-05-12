@@ -40,8 +40,8 @@
    tableBodyEl.innerHTML = "";  // drop old content
    for (const key of Object.keys( Movie.instances)) {
      const movie = Movie.instances[key];
-     // create list of actors for this movie
-     const actListEl = createListFromMap( movie.actors, "name");
+     // create list of actor for this movie
+     const actListEl = createListFromMap( movie.actor, "name");
      const row = tableBodyEl.insertRow();
      row.insertCell().textContent = movie.movieId;
      row.insertCell().textContent = movie.title;
@@ -61,7 +61,7 @@
    // set up a single selection list for selecting a director
    fillSelectWithOptions( selectDirectorEl, Person.instances,
        "personId", {displayProp: "name"});
-   // set up a multiple selection list for selecting actors
+   // set up a multiple selection list for selecting actor
    fillSelectWithOptions( selectActorsEl, Person.instances,
        "personId", {displayProp: "name"});
    document.getElementById("Movie-M").style.display = "none";
@@ -91,18 +91,18 @@
      title: createFormEl["title"].value,
      releaseDate: createFormEl["releaseDate"].value,
      actorIdRefs: [],
-     director_id: createFormEl["selectDirector"].value
+     directorId: createFormEl["selectDirector"].value
    };
    // check all input fields and show error messages
    createFormEl.movieId.setCustomValidity(
        Movie.checkMovieIdAsId( slots.movieId).message);
    createFormEl.title.setCustomValidity(
        Movie.checkTitle( slots.title).message);
-   // get the list of selected actors
+   // get the list of selected actor
    const selActOptions = createFormEl.selectActors.selectedOptions;
    // check the mandatory value constraint for actors
    createFormEl.selectDirector.setCustomValidity(
-       Movie.checkDirector( slots.director_id).message);
+       Movie.checkDirector( slots.directorId).message);
    // save the input data only if all form fields are valid
    if (createFormEl.checkValidity()) {
      // construct a list of actor ID references
@@ -144,8 +144,8 @@
      updateFormEl["releaseDate"].value = movie.releaseDate;
      // set up the associated director selection list
      fillSelectWithOptions( selectDirectorEl, Person.instances, "name");
-     // set up the associated actors selection widget
-     createMultiSelectionWidget( selectActorsWidget, movie.actors,
+     // set up the associated actor selection widget
+     createMultiSelectionWidget( selectActorsWidget, movie.actor,
          Person.instances, "actorId", "name", 1);  // minCard=1
      // assign associated director as the selected option to select element
      if (movie.director) updateFormEl["selectDirector"].value = movie.director.name;
@@ -167,7 +167,7 @@
      movieId: updateFormEl["movieId"].value,
      title: updateFormEl["title"].value,
      releaseDate: updateFormEl["releaseDate"].value,
-     director_id: updateFormEl["selectDirector"].value
+     directorId: updateFormEl["selectDirector"].value
    };
    // add event listeners for responsive validation
    /* MISSING CODE */

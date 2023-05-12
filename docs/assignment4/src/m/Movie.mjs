@@ -8,14 +8,14 @@ import { NoConstraintViolation,
 
 export default class Movie {
   // using a record parameter with ES6 function parameter destructuring
-  constructor ({movieId, title, releaseDate, director, director_id,
-                 actors, actorIdRefs}) {
+  constructor ({movieId, title, releaseDate, director, directorId,
+                 actor, actorIdRefs}) {
     this.movieId = movieId;      // number (int)
     this.title = title;       // string
     this.releaseDate = releaseDate;  // string
     // assign object references or ID references (to be converted in setter)
-    this.actors = actors || actorIdRefs;
-    this.director = director || director_id;
+    this.actor = actor || actorIdRefs;
+    this.director = director || directorId;
   }
 
   get movieId() {
@@ -78,7 +78,7 @@ export default class Movie {
       return new RangeConstraintViolation(
           "The title must be a non-empty string!");
     } else if (newTitle.trim().length > 120) {
-      return new StringLenghtConstrainViolation(
+      return new StringLengthConstrainViolation(
           "The title can have up to 120 characters!");
     } else {
       return new NoConstraintViolation();
@@ -119,11 +119,11 @@ export default class Movie {
     }
   }
 
-  get actors() {
-    return this._actors;
+  get actor() {
+    return this._actor;
   }
-  set actors( a) {
-    this._actors = {};
+  set actor( a) {
+    this._actor = {};
     if (Array.isArray(a)) {  // array of IdRefs
       for (const idRef of a) {
         this.addActor( idRef);
@@ -151,7 +151,7 @@ export default class Movie {
       if (actor_id && validationResult instanceof NoConstraintViolation) {
         // add the new author reference
         const key = String( actor_id);
-        this._actors[key] = Person.instances[key];
+        this._actor[key] = Person.instances[key];
       } else {
         throw validationResult;
       }
@@ -164,7 +164,7 @@ export default class Movie {
       const validationResult = Movie.checkActor( actor_id);
       if (validationResult instanceof NoConstraintViolation) {
         // delete the author reference
-        delete this._actors[String( actor_id)];
+        delete this._actor[String( actor_id)];
       } else {
         throw validationResult;
       }
@@ -176,22 +176,22 @@ export default class Movie {
   }
   set director( d) {
     // p can be an ID reference or an object reference 
-    const director_id = (typeof d !==  "object") ? d : d.personId;
-    const validationResult = Movie.checkDirector( director_id);
+    const directorId = (typeof d !==  "object") ? d : d.personId;
+    const validationResult = Movie.checkDirector( directorId);
     if (validationResult instanceof NoConstraintViolation) {
       // create the new director reference
-      this._director = Person.instances[ director_id];
+      this._director = Person.instances[ directorId];
     } else {
       throw validationResult;
     }
   }
-  static checkDirector( director_id) {
-    if (!director_id) {
+  static checkDirector( directorId) {
+    if (!directorId) {
       return new MandatoryValueConstraintViolation(
         "A director must be chosen from the list!");
     } else {
       // invoke foreign key constraint check
-      return Person.checkPersonIdAsIdRef( director_id);
+      return Person.checkPersonIdAsIdRef( directorId);
     }
   }
 
@@ -237,7 +237,7 @@ Movie.retrieveAll = function () {
 };
 
 //  Update an existing movie row
-Movie.update = function ({movieId, title, releaseDate, director_id,
+Movie.update = function ({movieId, title, releaseDate, directorId,
   actorIdRefsToAdd, actorIdRefsToRemove}) {
   var noConstraintViolated = true,
       updatedProperties = [];
@@ -258,20 +258,20 @@ Movie.update = function ({movieId, title, releaseDate, director_id,
       updatedProperties.push("releaseDate");
     }
     if (actorIdRefsToAdd) {
-      updatedProperties.push("actors(added)");
+      updatedProperties.push("actor(added)");
       for (const actorIdRef of actorIdRefsToAdd) {
         movie.addActor( actorIdRef);
       }
     }
     if (actorIdRefsToRemove) {
-      updatedProperties.push("actors(removed)");
+      updatedProperties.push("actor(removed)");
       for (const actor_id of actorIdRefsToRemove) {
         movie.removeActor( actor_id);
       }
     }
-    if (director_id && movie.director_id !== director_id) {
-      movie.director_id = director_id;
-      updatedProperties.push("director_id");
+    if (directorId && movie.directorId !== directorId) {
+      movie.directorId = directorId;
+      updatedProperties.push("directorId");
     }
   } catch (e) {
     console.log( e.constructor.name +": "+ e.message);

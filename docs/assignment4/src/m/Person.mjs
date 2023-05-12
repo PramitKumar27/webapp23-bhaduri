@@ -4,7 +4,7 @@ import { NoConstraintViolation,
   MandatoryValueConstraintViolation, 
   RangeConstraintViolation,
   UniquenessConstraintViolation,
-  StringLenghtConstrainViolation,
+  StringLengthConstrainViolation,
   ReferentialIntegrityConstraintViolation } from "../../lib/errorTypes.mjs";
 
 /**
@@ -89,7 +89,7 @@ export default class Person {
       return new RangeConstraintViolation(
           "The title must be a non-empty string!");
     } else if (name.trim().length > 120) {
-      return new StringLenghtConstrainViolation(
+      return new StringLengthConstrainViolation(
           "The title can have up to 120 characters!");
     } else {
       return new NoConstraintViolation();
@@ -160,14 +160,14 @@ Person.update = function ({personId, name}) {
 /**
  *  Delete an person object/record
  *  Since the movie-actor association is unidirectional, a linear search on all
- *  movies is required for being able to delete the actor from the movies' actors.
+ *  movies is required for being able to delete the actor from the movies' actor.
  */
 Person.destroy = function (personId) {
   const person = Person.instances[personId];
   // delete all dependent movie records
   for (const movieId of Object.keys( Movie.instances)) {
     const movie = Movie.instances[movieId];
-    if (personId in movie.actors) delete movie.actors[personId];
+    if (personId in movie.actor) delete movie.actor[personId];
   }
   // delete the person object
   delete Person.instances[personId];
