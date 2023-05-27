@@ -3,7 +3,7 @@
  ***************************************************************/
  import Person from "../m/Person.mjs";
  import Movie from "../m/Movie.mjs";
- import { fillSelectWithOptions } from "../../lib/util.mjs";
+ import { createListFromMap, fillSelectWithOptions } from "../../lib/util.mjs";
  
  /***************************************************************
   Load data
@@ -44,6 +44,8 @@
      const row = tableBodyEl.insertRow();
      row.insertCell().textContent = person.personId;
      row.insertCell().textContent = person.name;
+     row.insertCell().appendChild(createListFromMap(person.directedMovies, "title"));
+     row.insertCell().appendChild(createListFromMap(person.playedMovies, "title"));
    }
    document.getElementById("Person-M").style.display = "none";
    document.getElementById("Person-R").style.display = "block";

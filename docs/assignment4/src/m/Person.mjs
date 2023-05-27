@@ -16,7 +16,9 @@ export default class Person {
   constructor ({personId, name}) {
     // assign properties by invoking implicit setters
     this.personId = personId;  // number (integer)
-    this.name = name;          // string
+    this.name = name; 
+    this._playedMovies = {};
+    this._directedMovies = {};        // string
   }
   get personId() {
     return this._personId;
@@ -99,6 +101,15 @@ export default class Person {
   toString() {
     return `Person{ person ID: ${this.personId}, name: ${this.name} }`;
   }
+
+  get directedMovies() {
+    return this._directedMovies;
+  }
+
+  get playedMovies() {
+    return this._playedMovies;
+  }
+
 
   toJSON() {  // is invoked by JSON.stringify
     var rec = {};

@@ -152,6 +152,7 @@ export default class Movie {
         // add the new author reference
         const key = String( actor_id);
         this._actor[key] = Person.instances[key];
+        this._actor[key].playedMovies[this._movieId] = this;
       } else {
         throw validationResult;
       }
@@ -164,6 +165,7 @@ export default class Movie {
       const validationResult = Movie.checkActor( actor_id);
       if (validationResult instanceof NoConstraintViolation) {
         // delete the author reference
+        delete this._actor[String(actor_id)].playedMovies[this._movieId]
         delete this._actor[String( actor_id)];
       } else {
         throw validationResult;
@@ -180,7 +182,11 @@ export default class Movie {
     const validationResult = Movie.checkDirector( directorId);
     if (validationResult instanceof NoConstraintViolation) {
       // create the new director reference
+      if(this._director){
+        delete this._director.directedMovies[this._movieId]
+      }
       this._director = Person.instances[ directorId];
+      this._director.directedMovies[this._movieId] =this;
     } else {
       throw validationResult;
     }
