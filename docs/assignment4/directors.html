@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#ffffff" />
   <link rel="stylesheet" href="css/main.css" />
 
-  <script src="src/v/persons.mjs" type="module"></script>
+  <script src="src/v/directors.mjs" type="module"></script>
 </head>
 
 <body>
@@ -16,37 +16,37 @@
   <main>
     <div class="wrapper clearfix">
       <!-- ======================================================= -->
-      <section id="Person-M" class="UI-Page">
+      <section id="Director-M" class="UI-Page">
         <!-- ======================================================= -->
-        <h1>Manage person data</h1>
+        <h1>Manage director data</h1>
         <ul class="menu">
           <li>
             <button type="button" id="RetrieveAndListAll">Retrieve/list all
-              person records
+              director records
             </button>
           </li>
           <li>
-            <button type="button" id="Create">Create a new person record</button>
+            <button type="button" id="Create">Create a new director record</button>
           </li>
           <li>
-            <button type="button" id="Update">Update an person record</button>
+            <button type="button" id="Update">Update an director record</button>
           </li>
           <li>
-            <button type="button" id="Delete">Delete an person record</button>
+            <button type="button" id="Delete">Delete an director record</button>
           </li>
         </ul>
         <div class="button"><a href="index.html">Back to Main menu</a></div>
       </section>
       <!-- ======================================================= -->
-      <section id="Person-R" class="UI-Page">
+      <section id="Director-R" class="UI-Page">
         <!-- ======================================================= -->
-        <h1>Retrieve and list all person records</h1>
+        <h1>Retrieve and list all director records</h1>
         <table>
           <thead>
             <tr>
               <th>ID</th>
               <th>Name</th>
-              <th>Roles</th>
+              <th>Directed Movies</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -56,9 +56,9 @@
         </div>
       </section>
       <!-- ======================================================= -->
-      <section id="Person-C" class="UI-Page">
+      <section id="Director-C" class="UI-Page">
         <!-- ======================================================= -->
-        <h1>Create a new person record</h1>
+        <h1>Create a new director record</h1>
         <form>
           <div class="field">
             <label>ID: <input type="text" name="personId" /></label>
@@ -73,12 +73,12 @@
         </form>
       </section>
       <!-- ======================================================= -->
-      <section id="Person-U" class="UI-Page">
+      <section id="Director-U" class="UI-Page">
         <!-- ======================================================= -->
-        <h1>Update an person record</h1>
+        <h1>Update an director record</h1>
         <form>
           <div class="select-one">
-            <label>Select person: <select name="selectPerson"></select></label>
+            <label>Select director: <select name="selectDirector"></select></label>
           </div>
           <div class="field">
             <label>ID:
@@ -95,15 +95,15 @@
         </form>
       </section>
       <!-- ======================================================= -->
-      <section id="Person-D" class="UI-Page">
+      <section id="Director-D" class="UI-Page">
         <!-- ======================================================= -->
-        <h1>Delete an person record</h1>
+        <h1>Delete an director record</h1>
         <form>
           <div class="select-one">
-            <label>Select person: <select name="selectPerson"></select></label>
+            <label>Select director: <select name="selectDirector"></select></label>
           </div>
           <div class="button-group">
-            <button type="submit" name="commit" disabled="disabled">Delete</button>
+            <button type="submit" name="commit">Delete</button>
             <button type="button" class="back-to-menu">Back to menu</button>
           </div>
         </form>

@@ -3,31 +3,16 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Plain JS Unidirectional Association App: Manage Movies</title>
+  <title>Movie App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#ffffff" />
-  <link rel="icon" href="favicon.svg" />
-  <link rel="mask-icon" href="mask-icon.svg" color="#000000" />
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-  <link rel="manifest" href="manifest.json" />
-
-
   <link rel="stylesheet" href="css/main.css" />
 
   <script src="src/v/movies.mjs" type="module"></script>
 </head>
 
 <body>
-  <header>
-    <div class="wrapper clearfix">
-      <nav>
-        <ul>
-          <li><a href="persons.html">Persons</a></li>
-          <li><a href="movies.html">Movies</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+
   <main>
     <div class="wrapper clearfix">
       <!-- ======================================================= -->
@@ -64,6 +49,7 @@
               <th>Release Date</th>
               <th>Actors</th>
               <th>Director</th>
+              <th>Category</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -84,7 +70,7 @@
             <label>Title: <input type="text" name="title" /></label>
           </div>
           <div class="field">
-            <label>Release Date: <input type="text" name="releaseDate" /></label>
+            <label>Release Date: <input type="date" id="datepicker" name="releaseDate" /></label>
           </div>
           <div class="select-one">
             <label>Director: <select name="selectDirector"></select></label>
@@ -93,6 +79,20 @@
             <label>Actors:
               <select name="selectActors" multiple="multiple"></select>
             </label>
+          </div>
+          <div class="field">
+            <label>Category: <select name="category"></select></label>
+          </div>
+          <div class="field Biography">
+            <label>About: <select name="selectAboutPerson"></select></label>
+          </div>
+          <div class="field TvSeriesEpisode">
+
+            <label>Series name: <input type="text" name="tvSeriesName" /></label>
+          </div>
+          <div class="field TvSeriesEpisode">
+
+            <label>Episode number: <input type="text" name="episodeNo" /></label>
           </div>
           <div class="button-group">
             <button type="submit" name="commit">Save</button>
@@ -117,7 +117,7 @@
             <label>Title: <input type="text" name="title" /></label>
           </div>
           <div class="field">
-            <label>Release Date: <input type="text" name="releaseDate" /></label>
+            <label>Release Date: <input type="date" id="datepicker" name="releaseDate" /></label>
           </div>
           <div class="select-one">
             <label>Director: <select name="selectDirector"></select></label>
@@ -125,6 +125,21 @@
           <div class="widget">
             <label for="updMovieSelectActors">Actors:</label>
             <div id="updMovieSelectActors" class="MultiSelectionWidget"></div>
+          </div>
+          <div class="field">
+            <label>Category: <select name="category"></select></label>
+          </div>
+          <div class="field Biography">
+
+            <label>About: <select name="selectAboutPerson"></select></label>
+          </div>
+          <div class="field TvSeriesEpisode">
+
+            <label>Series name: <input type="text" name="tvSeriesName" /></label>
+          </div>
+          <div class="field TvSeriesEpisode">
+
+            <label>Episode number: <input type="text" name="episodeNo" /></label>
           </div>
           <div class="button-group">
             <button type="submit" name="commit" disabled="disabled">Save</button>
@@ -141,7 +156,7 @@
             <label>Select movie: <select name="selectMovie"></select></label>
           </div>
           <div class="button-group">
-            <button type="submit" name="commit">Delete</button>
+            <button type="submit" name="commit" disabled="disabled">Delete</button>
             <button type="button" class="back-to-menu">Back to menu</button>
           </div>
         </form>

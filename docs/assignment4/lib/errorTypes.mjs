@@ -1,3 +1,10 @@
+class ConstraintViolation extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "ConstraintViolation";
+  }
+}
+
 class NoConstraintViolation extends Error {
   constructor(message) {
     super(message);
@@ -26,10 +33,10 @@ class UniquenessConstraintViolation extends Error {
   }
 }
 
-class StringLengthConstrainViolation extends Error {
+class StringLengthConstraintViolation extends Error {
   constructor(message) {
     super(message);
-    this.name = "StringLengthConstrainViolation";
+    this.name = "StringLengthConstraintViolation";
   }
 }
 
@@ -47,10 +54,19 @@ class ReferentialIntegrityConstraintViolation extends Error {
   }
 }
 
+class FrozenValueConstraintViolation extends Error {
+  constructor(message) {
+    super(message);
+    this.name = "FrozenValueConstraintViolation";
+  }
+}
+
 export { NoConstraintViolation, 
   MandatoryValueConstraintViolation, 
   RangeConstraintViolation,
   UniquenessConstraintViolation,
-  StringLengthConstrainViolation,
+  StringLengthConstraintViolation,
   IntervalConstraintViolation,
-  ReferentialIntegrityConstraintViolation};
+  ReferentialIntegrityConstraintViolation,
+  FrozenValueConstraintViolation,
+  ConstraintViolation};

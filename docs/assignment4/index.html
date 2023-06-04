@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <title>Pramit's Cinema App</title>
+  <title>Movie App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="css/main.css" />
 
@@ -21,27 +21,21 @@
 </head>
 
 <body>
-  <header>
-    <div class="wrapper clearfix">
-      <nav>
-        <ul>
-          <li><a href="movies.html">Movies</a></li>
-          <li><a href="persons.html">People</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
+
   <main>
     <div class="wrapper clearfix">
+      <p>This app supports the following operations:</p>
       <div class="two-col-menu">
-
-        <a href="persons.html">Manage person data</a><br>
-        <a href="movies.html">Manage movie data</a>
-        <br><br>
-
-        <button type="button" class="createTestData">Generate test data</button>
-        <button type="button" id="clearData">Clear data</button>
-
+        <ul class="menu">
+          <li><a href="movies.html">Movie data</a></li>
+          <li><a href="persons.html">Person data</a></li>
+          <li><a href="actors.html">Actor data</a></li>
+          <li><a href="directors.html">Director data</a></li>
+        </ul>
+        <ul class="menu">
+          <li><button type="button" class="createTestData">Generate test data</button></li>
+          <li><button type="button" id="clearData">Clear database</button></li>
+        </ul>
       </div>
     </div>
   </main>

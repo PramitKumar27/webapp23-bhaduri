@@ -62,8 +62,8 @@ body {
   ALL: Theme
  =================== */
 :root {  /* pseudo-class used for variable definitions */
-  --light-bg-color: orange;     /*  #f16529 */
-  --dark-bg-color: brown;  /*  #e44d26 */
+  --light-bg-color: black;     /*  #f16529 */
+  --dark-bg-color: white;  /*  #e44d26 */
 /* --light-bg-color: forestgreen;
   --dark-bg-color: darkgreen;
 */

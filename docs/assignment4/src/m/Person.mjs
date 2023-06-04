@@ -1,10 +1,9 @@
-import Movie from "./Movie.mjs";
 import { cloneObject, isNonEmptyString } from "../../lib/util.mjs";
 import { NoConstraintViolation, 
   MandatoryValueConstraintViolation, 
   RangeConstraintViolation,
   UniquenessConstraintViolation,
-  StringLengthConstrainViolation,
+  StringLengthConstraintViolation,
   ReferentialIntegrityConstraintViolation } from "../../lib/errorTypes.mjs";
 
 /**
@@ -16,15 +15,13 @@ export default class Person {
   constructor ({personId, name}) {
     // assign properties by invoking implicit setters
     this.personId = personId;  // number (integer)
-    this.name = name; 
-    this._playedMovies = {};
-    this._directedMovies = {};        // string
+    this.name = name;          // string
   }
   get personId() {
     return this._personId;
   }
   set personId( id) {
-    const constraintViolation = Person.checkPersonIdAsId( id);
+    const constraintViolation = Person.checkPersonIdAsId( id, this.constructor);
     if (constraintViolation instanceof NoConstraintViolation) {
       this._personId = parseInt( id);
     } else {
@@ -37,13 +34,16 @@ export default class Person {
     } else {
       id = parseInt( id);  // convert to integer
       if (isNaN( id) || !Number.isInteger( id) || id < 1) {
+        console.log(id);
+        console.log(typeof id);
         return new RangeConstraintViolation("The person ID must be a positive integer!");
       } else {
         return new NoConstraintViolation();
       }
     }
   }
-  static checkPersonIdAsId( id) {
+  static checkPersonIdAsId( id, DirectType) {
+    if (!DirectType) DirectType = Person;  // default
     var constraintViolation = Person.checkPersonId(id);
     if ((constraintViolation instanceof NoConstraintViolation)) {
       // convert to integer
@@ -51,21 +51,22 @@ export default class Person {
       if (isNaN(id)) {
         return new MandatoryValueConstraintViolation(
             "A positive integer value for the person ID is required!");
-      } else if (Person.instances[String(id)]) {  // convert to string if number
+      } else if (DirectType.instances[String(id)]) {  // convert to string if number
         constraintViolation = new UniquenessConstraintViolation(
-            "There is already a person record with this person ID!");
+            `There is already a ${DirectType.name} record with this person ID!`);
       } else {
         constraintViolation = new NoConstraintViolation();
       }
     }
     return constraintViolation;
   }
-  static checkPersonIdAsIdRef( id) {
+  static checkPersonIdAsIdRef( id, Type) {
+    if (!Type) Type = Person;  // default
     var constraintViolation = Person.checkPersonId( id);
     if ((constraintViolation instanceof NoConstraintViolation) && id) {
-      if (!Person.instances[String(id)]) {
+      if (!Type.instances[String(id)]) {
         constraintViolation = new ReferentialIntegrityConstraintViolation(
-            "There is no person record with this person ID!");
+            `There is no ${Type.name} record with this person ID!`);
       }
     }
     return constraintViolation;
@@ -91,7 +92,7 @@ export default class Person {
       return new RangeConstraintViolation(
           "The title must be a non-empty string!");
     } else if (name.trim().length > 120) {
-      return new StringLengthConstrainViolation(
+      return new StringLengthConstraintViolation(
           "The title can have up to 120 characters!");
     } else {
       return new NoConstraintViolation();
@@ -102,20 +103,14 @@ export default class Person {
     return `Person{ person ID: ${this.personId}, name: ${this.name} }`;
   }
 
-  get directedMovies() {
-    return this._directedMovies;
-  }
-
-  get playedMovies() {
-    return this._playedMovies;
-  }
-
-
   toJSON() {  // is invoked by JSON.stringify
     var rec = {};
     for (const p of Object.keys( this)) {
-      // remove underscore prefix
-      if (p.charAt(0) === "_") rec[p.substr(1)] = this[p];
+      // keep underscore-prefixed properties except "_directedMovies" and "_playedMovies"
+      if (p.charAt(0) === "_" && p !== "_directedMovies" && p !== "_playedMovies") {
+        // remove underscore prefix
+        rec[p.substr(1)] = this[p];
+      }
     }
     return rec;
   }
@@ -125,6 +120,8 @@ export default class Person {
 *****************************************************/
 // initially an empty collection (in the form of a map)
 Person.instances = {};
+// initially an empty collection (in the form of a list)
+Person.subtypes = [];  
 
 /**********************************************************
  ***  Class-level ("static") storage management methods ***
@@ -170,16 +167,9 @@ Person.update = function ({personId, name}) {
 };
 /**
  *  Delete an person object/record
- *  Since the movie-actor association is unidirectional, a linear search on all
- *  movies is required for being able to delete the actor from the movies' actor.
  */
 Person.destroy = function (personId) {
   const person = Person.instances[personId];
-  // delete all dependent movie records
-  for (const movieId of Object.keys( Movie.instances)) {
-    const movie = Movie.instances[movieId];
-    if (personId in movie.actor) delete movie.actor[personId];
-  }
   // delete the person object
   delete Person.instances[personId];
   console.log( `Person ${person.name} deleted.`);
@@ -204,6 +194,15 @@ Person.retrieveAll = function () {
       console.log( `${e.constructor.name} while deserializing person ${key}: ${e.message}`);
     }
   }
+  // add all instances of all subtypes to Person.instances
+  for (const Subtype of Person.subtypes) {
+    Subtype.retrieveAll();
+
+    // already done in retrieveAll
+    /*for (const key of Object.keys( Subtype.instances)) {
+      Person.instances[key] = Subtype.instances[key];
+    }*/
+  }
   console.log( `${Object.keys( persons).length} person records loaded.`);
 };
 /**
@@ -212,9 +211,6 @@ Person.retrieveAll = function () {
 Person.saveAll = function () {
   const nmrOfPersons = Object.keys( Person.instances).length;
   try {
-    /*var moviesString = JSON.stringify( Person.instances);
-    moviesString = moviesString.replace(/"_/g,'"');
-    localStorage["persons"] = moviesString;*/
     localStorage["persons"] = JSON.stringify( Person.instances);
     console.log( `${nmrOfPersons} person records saved.`);
   } catch (e) {

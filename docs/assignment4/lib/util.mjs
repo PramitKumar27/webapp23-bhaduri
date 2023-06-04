@@ -122,6 +122,41 @@ function fillSelectWithOptions( selectEl, selectionRange, keyProp, optPar) {
   }
 }
 
+function fillSelectWithOptionsAndSelect( selectEl, selectionRange, keyProp,
+            optPar, selectedOne, defaultOpt) {
+  var optionEl = null, obj = null, displayProp = "";
+  // delete old contents
+  selectEl.innerHTML = "";
+  // create "no selection yet" entry
+  if (!defaultOpt) selectEl.add( createOption(""," --- "));
+  // create option elements from object property values
+  var options = Object.keys( selectionRange);
+  for (let i=0; i < options.length; i++) {
+    obj = selectionRange[options[i]];
+    if (optPar && optPar.displayProp) displayProp = optPar.displayProp;
+    else displayProp = keyProp;
+    optionEl = createOption( obj[keyProp], obj[displayProp]);
+    // if invoked with a selection argument, flag the selected options
+    if (parseInt(options[i]) === selectedOne) {
+      // flag the option element with this value as selected
+      optionEl.selected = true;
+    }
+    selectEl.add( optionEl);
+  }
+}
+
+function fill( selectEl, selectionRange) {
+  // delete old contents
+  selectEl.innerHTML = "";
+  var optionEl = null, obj = null;
+  selectEl.add( createOption(""," --- "));
+  for (let i=0; i < selectionRange.length; i++) {
+    obj = selectionRange[i];
+    optionEl = createOption( i, obj);
+    selectEl.add( optionEl);
+  }
+}
+
 /**
  * Create a "clone" of an object that is an instance of a model class
  *
@@ -342,4 +377,4 @@ function createChoiceWidget(containerEl, fld, values,
 
 export { isNonEmptyString, fillSelectWithOptions, cloneObject, 
   isIntegerOrIntegerString, createChoiceWidget, createListFromMap, 
-  createMultiSelectionWidget};
+  createMultiSelectionWidget, fillSelectWithOptionsAndSelect, fill, createOption};
