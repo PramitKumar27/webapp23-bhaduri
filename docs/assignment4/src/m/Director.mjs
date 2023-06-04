@@ -6,12 +6,12 @@ import { cloneObject } from "../../lib/util.mjs";
  * @class
  */
 export default class Director extends Person {
-  // using a single record parameter with ES6 function parameter destructuring
+ 
   constructor ({personId, name}) {
-    // call constructor of superclass
+    
     super({personId, name});
-    // derived inverse reference property (inverse of Movie::director)
-    this._directedMovies = {}; // initialize as an empty map
+    
+    this._directedMovies = {}; 
   }
 
   get directedMovies() {
@@ -21,16 +21,14 @@ export default class Director extends Person {
 /****************************************************
 *** Class-level ("static") properties ***************
 *****************************************************/
-// initially an empty collection (in the form of a map)
+
 Director.instances = {};
 Person.subtypes.push( Director); 
 
 /**********************************************************
  ***  Class-level ("static") storage management methods ***
  **********************************************************/
-/**
- *  Create a new director record/object
- */
+
 Director.add = function (slots) {
   try {
     const director = new Director( slots);
@@ -40,9 +38,7 @@ Director.add = function (slots) {
     console.log(`${e.constructor.name}: ${e.message}`);
   }
 };
-/**
- *  Update an existing director record/object
- */
+
 Director.update = function ({personId, name}) {
   const director = Director.instances[personId],
         objectBeforeUpdate = cloneObject( director);
@@ -55,7 +51,7 @@ Director.update = function ({personId, name}) {
   } catch (e) {
     console.log( `${e.constructor.name}: ${e.message}`);
     noConstraintViolated = false;
-    // restore object to its state before updating
+  
     Director.instances[personId] = objectBeforeUpdate;
   }
   if (noConstraintViolated) {
@@ -91,7 +87,7 @@ Director.retrieveAll = function () {
   }
   for (const key of Object.keys( directors)) {
     try {
-      // convert record to (typed) object
+      
       Director.instances[key] = new Director( directors[key]);
       Person.instances[key] = Director.instances[key];
     } catch (e) {

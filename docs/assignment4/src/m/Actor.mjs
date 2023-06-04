@@ -8,12 +8,12 @@ import { cloneObject } from "../../lib/util.mjs";
  * @class
  */
 export default class Actor extends Person {
-  // using a single record parameter with ES6 function parameter destructuring
+  
   constructor ({personId, name, agent, agent_id}) {
-    // call constructor of superclass
+    
     super({personId, name});
-    // derived inverse reference property (inverse of Movie::actors)
-    this._playedMovies = {};   // initialize as an empty map
+    
+    this._playedMovies = {};   
     if (agent || agent_id) this.agent = agent || agent_id;
   }
 
@@ -25,7 +25,7 @@ export default class Actor extends Person {
     return this._agent;
   }
   set agent( a) {
-    // d can be an ID reference or an object reference 
+    
     const agent_id = (typeof a !==  "object") ? a : a.personId;
     const validationResult = Actor.checkAgent( agent_id);
     if (validationResult instanceof NoConstraintViolation) {
@@ -36,10 +36,10 @@ export default class Actor extends Person {
   }
   static checkAgent( agent_id) {
     if (!agent_id) {
-      // an agent is optional
+      
       return new NoConstraintViolation();
     } else {
-      // invoke foreign key constraint check
+      
       return Person.checkPersonIdAsIdRef( agent_id, Person);
     }
   }
@@ -56,16 +56,14 @@ export default class Actor extends Person {
 /****************************************************
 *** Class-level ("static") properties ***************
 *****************************************************/
-// initially an empty collection (in the form of a map)
+
 Actor.instances = {};
 Person.subtypes.push( Actor);
 
 /**********************************************************
  ***  Class-level ("static") storage management methods ***
  **********************************************************/
-/**
- *  Create a new actor record/object
- */
+
 Actor.add = function (slots) {
   try {
     const actor = new Actor( slots);
@@ -75,9 +73,7 @@ Actor.add = function (slots) {
     console.log(`${e.constructor.name}: ${e.message}`);
   }
 };
-/**
- *  Update an existing actor record/object
- */
+
 Actor.update = function ({personId, name, agent_id}) {
   const actor = Actor.instances[personId],
         objectBeforeUpdate = cloneObject( actor);
@@ -90,23 +86,23 @@ Actor.update = function ({personId, name, agent_id}) {
     const act_id = parseInt(agent_id);
     if (actor.agent) {
       if (act_id && actor.agent.personId !== act_id) {
-        // agent has a non-empty value that is new
+    
         actor.agent = agent_id;
         updatedProperties.push("agent");
       } else if (!agent_id && actor.agent !== undefined) {
-        // agent has a empty value that is new
-        delete actor._agent;  // unset the property "agent"
+     
+        delete actor._agent;  
         updatedProperties.push("agent");
       }
     } else if (act_id) {
-      // actor has no agent, but gets now one
+     
       actor.agent = agent_id;
       updatedProperties.push("agent");
     }
   } catch (e) {
     console.log( `${e.constructor.name}: ${e.message}`);
     noConstraintViolated = false;
-    // restore object to its state before updating
+   
     Actor.instances[personId] = objectBeforeUpdate;
   }
   if (noConstraintViolated) {
@@ -118,25 +114,19 @@ Actor.update = function ({personId, name, agent_id}) {
     }
   }
 };
-/**
- *  Delete an actor object/record
- *  Since the movie-actor association is unidirectional, a linear search on all
- *  movies is required for being able to delete the actor from the movies' actors.
- */
+
 Actor.destroy = function (personId) {
   const person = Actor.instances[personId];
-  // delete all dependent movie records
+
   for (const movieId of Object.keys( Movie.instances)) {
     const movie = Movie.instances[movieId];
     if (personId in movie.actors) delete movie.actors[personId];
   }
-  // delete the actor object
+  
   delete Actor.instances[personId];
   console.log( `Person ${person.name} deleted.`);
 };
-/**
- *  Load all actor records and convert them to objects
- */
+
 Actor.retrieveAll = function () {
   var actors = {};
   if (!localStorage["actors"]) localStorage["actors"] = "{}";
@@ -148,7 +138,7 @@ Actor.retrieveAll = function () {
   }
   for (const key of Object.keys( actors)) {
     try {
-      // convert record to (typed) object
+     
       Actor.instances[key] = new Actor( actors[key]);
       Person.instances[key] = Actor.instances[key];
     } catch (e) {
@@ -157,9 +147,7 @@ Actor.retrieveAll = function () {
   }
   console.log( `${Object.keys( actors).length} actor records loaded.`);
 };
-/**
- *  Save all actor objects as records
- */
+
 Actor.saveAll = function () {
   const nmrOfActors = Object.keys( Actor.instances).length;
   try {

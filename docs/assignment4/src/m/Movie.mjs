@@ -12,18 +12,16 @@ import { NoConstraintViolation,
 import { MovieCategoryEL} from "../../lib/Enumeration.mjs";
 
 export default class Movie {
-  // using a record parameter with ES6 function parameter destructuring
+  
   constructor ({movieId, title, releaseDate, director, director_id,
                  actors, actorIdRefs, category, about, aboutIdRefs, tvSeriesName,
                  episodeNo}) {
-    this.movieId = movieId;          // number (int)
-    this.title = title;              // string
-    this.releaseDate = releaseDate;  // string
-    // assign object references or ID references (to be converted in setter)
+    this.movieId = movieId;          
+    this.title = title;              
+    this.releaseDate = releaseDate;  
     this.actors = actors || actorIdRefs;
     this.director = director || director_id;
 
-    // optional properties
     if (category) this.category = category;
     if (about || aboutIdRefs) this.about = about || aboutIdRefs;
     if (tvSeriesName) this.tvSeriesName = tvSeriesName;
@@ -33,7 +31,7 @@ export default class Movie {
   get movieId() {
     return this._movieId;
   }
-  //  set the movieId but first validating the data
+
   set movieId( id) {
     const validationResult = Movie.checkMovieIdAsId( id);
     if (validationResult instanceof NoConstraintViolation) {
@@ -46,13 +44,13 @@ export default class Movie {
     if (id === undefined) {
       return new NoConstraintViolation();
     }
-    const newId = parseInt(id); // transfer string to int
+    const newId = parseInt(id); 
     if (Number.isInteger( newId)) {
       if (newId > 0) return new NoConstraintViolation();
     }
     
     return new RangeConstraintViolation(
-      "The movie ID must be a positiv integer!");
+      "The movie ID must be a positive integer!");
   }
   static checkMovieIdAsId( id) {
     var constraintViolation = Movie.checkMovieId( id);
@@ -69,8 +67,6 @@ export default class Movie {
     }
     return constraintViolation;
   }
-
-  //  set the title but first validating the data
   get title() {
     return this._title;
   }
@@ -97,7 +93,6 @@ export default class Movie {
     }
   }
 
-  //  set the releaseDate but first validating the data
   get releaseDate() {
     return this._releaseDate;
   }
@@ -135,7 +130,7 @@ export default class Movie {
     return this._actors;
   }
   set actors( a) {
-    // delete all actors
+
     if (this.actors) {
       for (const actorId of Object.keys( this.actors)) {
         delete this._actors[actorId].playedMovies[movieId];
@@ -143,12 +138,12 @@ export default class Movie {
     }
     this._actors = {};
     
-    // refill list of actors
-    if (Array.isArray(a)) {  // array of IdRefs
+ 
+    if (Array.isArray(a)) {  
       for (const idRef of a) {
         this.addActor( idRef);
       }
-    } else {  // map of IdRefs to object references
+    } else {  
       for (const idRef of Object.keys( a)) {
         this.addActor( a[idRef]);
       }
@@ -156,39 +151,34 @@ export default class Movie {
   }
   static checkActor( actor_id) {
     if (!actor_id) {
-      // actor(s) are optional
+      
       return new NoConstraintViolation();
     } else {
-      // invoke foreign key constraint check
+      
       return Person.checkPersonIdAsIdRef( actor_id, Actor);
     }
   }
   addActor( actor) {
-    // a can be an ID reference or an object reference
+    
     const actor_id = (typeof actor !== "object") ? parseInt(actor) : actor.personId;
     const validationResult = Movie.checkActor( actor_id);
     if (actor_id && validationResult instanceof NoConstraintViolation) {
-      // add the new actor reference
+      
       const key = String( actor_id);
-      /*console.log("test1 ",actor);
-      console.log("test2 ",this._actors);
-      console.log("test3 ",Actor.instances);*/
+      
       this._actors[key] = Actor.instances[key];
-      //console.log("test4 ",this._actors);
-      // automatically add the derived inverse reference
+      
       this._actors[key].playedMovies[this._movieId] = this;
     } else {
       throw validationResult;
     }
   }
   removeActor( actor) {
-    // a can be an ID reference or an object reference
+    
     const actor_id = (typeof actor !== "object") ? parseInt( actor) : actor.personId;
     const validationResult = Movie.checkActor( actor_id);
     if (validationResult instanceof NoConstraintViolation) {
-      // automatically delete the derived inverse reference
       delete this._actors[actor_id].playedMovies[this._movieId];
-      // delete the actor reference
       delete this._actors[actor_id];
     } else {
       throw validationResult;
@@ -199,17 +189,16 @@ export default class Movie {
     return this._director;
   }
   set director( d) {
-    // d can be an ID reference or an object reference 
+    
     const director_id = (typeof d !==  "object") ? d : d.personId;
     const validationResult = Movie.checkDirector( director_id);
     if (validationResult instanceof NoConstraintViolation) {
       if (this._director) {
-        // delete the inverse reference in Director::directedMovies
+        
         delete this._director.directedMovies[ this._movieId];
       }
-      // create the new director reference
+      
       this._director = Director.instances[ director_id];
-      // add the new inverse reference to Director::directedMovies
       this._director.directedMovies[ this._movieId] = this;
     } else {
       throw validationResult;
@@ -220,7 +209,7 @@ export default class Movie {
       return new MandatoryValueConstraintViolation(
         "A director must be chosen from the list!");
     } else {
-      // invoke foreign key constraint check
+      
       return Person.checkPersonIdAsIdRef( director_id, Director);
     }
   }
@@ -258,7 +247,7 @@ export default class Movie {
     return this._about;
   }
   set about( a) {
-    // d can be an ID reference or an object reference 
+    
     const about_id = (typeof a !==  "object") ? a : a.personId;
     const validationResult = Movie.checkAbout( about_id, this.category);
     if (validationResult instanceof NoConstraintViolation) {
@@ -275,7 +264,7 @@ export default class Movie {
       return new ConstraintViolation("About should be empty " +
           "if the movie is not a biography!");
     } else {
-      // invoke foreign key constraint check
+      
       return Person.checkPersonIdAsIdRef( about_id, Person);
     }
   }
@@ -357,7 +346,7 @@ Movie.instances = {};
 Movie.add = function (slots) {
   try {
     const movie = new Movie( slots);
-    // add movie to the Movie.instances collection
+    
     Movie.instances[slots.movieId] = movie;
     console.log(`Movie ${slots.movieId} created!`);
   } catch (e) {
@@ -365,7 +354,7 @@ Movie.add = function (slots) {
   }
 }
 
-// Load the movie table from Local Storage
+
 Movie.retrieveAll = function () {
   var movies = {};
   try {
@@ -384,10 +373,10 @@ Movie.retrieveAll = function () {
       console.log(`${e.constructor.name} while deserializing movie ${movieId}: ${e.message}`);
     }
   }
-  //console.log(Movie.instances);
+  
 };
 
-//  Update an existing movie row
+
 Movie.update = function ({movieId, title, releaseDate, director_id,
   actorIdRefsToAdd, actorIdRefsToRemove, category, about_id, tvSeriesName,
   episodeNo}) {
@@ -444,7 +433,7 @@ Movie.update = function ({movieId, title, releaseDate, director_id,
   } catch (e) {
     console.log( e.constructor.name +": "+ e.message);
     noConstraintViolated = false;
-    // restore object to its state before updating
+    
     Movie.instances[movieId] = objectBeforeUpdate;
   }
   if (noConstraintViolated) {
@@ -458,14 +447,14 @@ Movie.update = function ({movieId, title, releaseDate, director_id,
   }
 };
 
-//  Delete a movie row from persistent storage
+
 Movie.destroy = function (movieId) {
   const movie = Movie.instances[movieId];
   if (movie) {
     console.log( movie.title + " deleted!");
-    // remove inverse reference from movie.director
+    
     delete movie.director.directedMovies[movieId];
-    // remove inverse references from all movie.actors
+    
     for (const actorId of Object.keys( movie.actors)) {
       delete movie.actors[actorId].playedMovies[movieId];
     }
@@ -475,7 +464,6 @@ Movie.destroy = function (movieId) {
   }
 };
 
-//  Save all movie objects to Local Storage
 Movie.saveAll = function () {
   const nmrOfMovies = Object.keys( Movie.instances).length;
   try {

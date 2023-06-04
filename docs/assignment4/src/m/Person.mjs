@@ -11,11 +11,9 @@ import { NoConstraintViolation,
  * @class
  */
 export default class Person {
-  // using a single record parameter with ES6 function parameter destructuring
   constructor ({personId, name}) {
-    // assign properties by invoking implicit setters
-    this.personId = personId;  // number (integer)
-    this.name = name;          // string
+    this.personId = personId;  
+    this.name = name;          
   }
   get personId() {
     return this._personId;
@@ -30,9 +28,9 @@ export default class Person {
   }
   static checkPersonId( id) {
     if (!id) {
-      return new NoConstraintViolation();  // may be optional as an IdRef
+      return new NoConstraintViolation();  
     } else {
-      id = parseInt( id);  // convert to integer
+      id = parseInt( id);  
       if (isNaN( id) || !Number.isInteger( id) || id < 1) {
         console.log(id);
         console.log(typeof id);
@@ -43,15 +41,15 @@ export default class Person {
     }
   }
   static checkPersonIdAsId( id, DirectType) {
-    if (!DirectType) DirectType = Person;  // default
+    if (!DirectType) DirectType = Person;  
     var constraintViolation = Person.checkPersonId(id);
     if ((constraintViolation instanceof NoConstraintViolation)) {
-      // convert to integer
+      
       id = parseInt(id);
       if (isNaN(id)) {
         return new MandatoryValueConstraintViolation(
             "A positive integer value for the person ID is required!");
-      } else if (DirectType.instances[String(id)]) {  // convert to string if number
+      } else if (DirectType.instances[String(id)]) {  
         constraintViolation = new UniquenessConstraintViolation(
             `There is already a ${DirectType.name} record with this person ID!`);
       } else {
@@ -61,7 +59,7 @@ export default class Person {
     return constraintViolation;
   }
   static checkPersonIdAsIdRef( id, Type) {
-    if (!Type) Type = Person;  // default
+    if (!Type) Type = Person;  
     var constraintViolation = Person.checkPersonId( id);
     if ((constraintViolation instanceof NoConstraintViolation) && id) {
       if (!Type.instances[String(id)]) {
@@ -85,7 +83,7 @@ export default class Person {
   }
   static checkName( name) {
     if (!name) {
-      // is not mentioned but would only make sense
+      
       return new MandatoryValueConstraintViolation(
         "A name for the person must be provided!");
     } else if (!isNonEmptyString(name)) {
@@ -103,12 +101,12 @@ export default class Person {
     return `Person{ person ID: ${this.personId}, name: ${this.name} }`;
   }
 
-  toJSON() {  // is invoked by JSON.stringify
+  toJSON() {  
     var rec = {};
     for (const p of Object.keys( this)) {
-      // keep underscore-prefixed properties except "_directedMovies" and "_playedMovies"
+      
       if (p.charAt(0) === "_" && p !== "_directedMovies" && p !== "_playedMovies") {
-        // remove underscore prefix
+      
         rec[p.substr(1)] = this[p];
       }
     }
@@ -118,17 +116,15 @@ export default class Person {
 /****************************************************
 *** Class-level ("static") properties ***************
 *****************************************************/
-// initially an empty collection (in the form of a map)
+
 Person.instances = {};
-// initially an empty collection (in the form of a list)
+
 Person.subtypes = [];  
 
 /**********************************************************
  ***  Class-level ("static") storage management methods ***
  **********************************************************/
-/**
- *  Create a new person record/object
- */
+
 Person.add = function (slots) {
   try {
     const person = new Person( slots);
@@ -138,9 +134,7 @@ Person.add = function (slots) {
     console.log(`${e.constructor.name}: ${e.message}`);
   }
 };
-/**
- *  Update an existing person record/object
- */
+
 Person.update = function ({personId, name}) {
   const person = Person.instances[String( personId)],
         objectBeforeUpdate = cloneObject( person);
@@ -152,8 +146,7 @@ Person.update = function ({personId, name}) {
     }
   } catch (e) {
     console.log( `${e.constructor.name}: ${e.message}`);
-    noConstraintViolated = false;
-    // restore object to its state before updating
+    noConstraintViolated = false
     Person.instances[personId] = objectBeforeUpdate;
   }
   if (noConstraintViolated) {
@@ -170,13 +163,10 @@ Person.update = function ({personId, name}) {
  */
 Person.destroy = function (personId) {
   const person = Person.instances[personId];
-  // delete the person object
   delete Person.instances[personId];
   console.log( `Person ${person.name} deleted.`);
 };
-/**
- *  Load all person records and convert them to objects
- */
+
 Person.retrieveAll = function () {
   var persons = {};
   if (!localStorage["persons"]) localStorage["persons"] = "{}";
@@ -188,26 +178,18 @@ Person.retrieveAll = function () {
   }
   for (const key of Object.keys( persons)) {
     try {
-      // convert record to (typed) object
       Person.instances[key] = new Person( persons[key]);
     } catch (e) {
       console.log( `${e.constructor.name} while deserializing person ${key}: ${e.message}`);
     }
   }
-  // add all instances of all subtypes to Person.instances
   for (const Subtype of Person.subtypes) {
     Subtype.retrieveAll();
 
-    // already done in retrieveAll
-    /*for (const key of Object.keys( Subtype.instances)) {
-      Person.instances[key] = Subtype.instances[key];
-    }*/
   }
   console.log( `${Object.keys( persons).length} person records loaded.`);
 };
-/**
- *  Save all person objects as records
- */
+
 Person.saveAll = function () {
   const nmrOfPersons = Object.keys( Person.instances).length;
   try {

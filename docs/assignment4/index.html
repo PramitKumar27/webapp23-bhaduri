@@ -6,13 +6,10 @@
   <title>Movie App</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="css/main.css" />
-
-
   <script type="module">
     import { clearData, createTestData } from "./src/c/app.mjs";
   const clearButton = document.getElementById("clearData"),
     createTestDataButtons = document.querySelectorAll("button.createTestData");
-  // Set event handler for the button "clearData"
   clearButton.addEventListener("click", clearData);
   for (const btn of createTestDataButtons) {
     btn.addEventListener("click", createTestData);
